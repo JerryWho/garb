@@ -35,8 +35,18 @@ module Garb
       @offset = opts.fetch(:offset, nil)
 
       instance_eval(&block) if block_given?
-
-      ReportResponse.new(send_request_for_body).results
+      @report_response = ReportResponse.new(send_request_for_body)
+      
+      @total_results = @report_response.total_results
+  
+      @report_response.results
+    end
+    
+    def total_results(profile, opts = {})
+      # To get the total amount of possible results we just need to fetch one line
+      opts[:limit] = 1
+      results(profile, opts)
+      @total_results
     end
 
     def page_params

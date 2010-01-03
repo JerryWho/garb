@@ -30,6 +30,24 @@ module Garb
       @results || parse
     end
     
+    def parse_header
+      feed = Feed.parse(@xml)
+      @totalResults = feed.totalResults
+    end
+    
+    def total_results
+      @total_results || parse_header
+    end
+    
+    class Feed
+      include HappyMapper
+      
+      tag 'feed'
+      # namespace "openSearch"
+      element :totalResults, String, :tag => 'totalResults', :namespace => 'http://a9.com/-/spec/opensearchrss/1.0/'
+    end
+
+    
     class Metric
       include HappyMapper
 
