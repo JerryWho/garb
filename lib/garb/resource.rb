@@ -27,6 +27,10 @@ module Garb
     end
 
     def results(profile, opts = {}, &block)
+      fetch_data(profile, opts, &block).results
+    end
+    
+    def fetch_data(profile, opts ={}, &block)
       @profile = profile.is_a?(Profile) ? profile : Profile.first(profile)
 
       @start_date = opts.fetch(:start_date, Time.now - MONTH)
@@ -35,18 +39,13 @@ module Garb
       @offset = opts.fetch(:offset, nil)
 
       instance_eval(&block) if block_given?
-      @report_response = ReportResponse.new(send_request_for_body)
-      
-      @total_results = @report_response.total_results
-  
-      @report_response.results
+      ReportResponse.new(send_request_for_body)
     end
     
     def total_results(profile, opts = {})
       # To get the total amount of possible results we just need to fetch one line
       opts[:limit] = 1
-      results(profile, opts)
-      @total_results
+      fetch_data(profile, opts).total_results
     end
 
     def page_params
