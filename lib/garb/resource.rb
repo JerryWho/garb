@@ -45,7 +45,7 @@ module Garb
     def total_results(profile, opts = {})
       # To get the total amount of possible results we just need to fetch one line
       opts[:limit] = 1
-      fetch_data(profile, opts).total_results
+      fetch_data(profile, opts).total_results.to_i
     end
 
     def page_params
